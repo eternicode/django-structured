@@ -1,0 +1,8 @@
+---
+services:
+    app:
+        image: django-structured
+        build:
+            context: .
+        volumes:
+          - .:/app

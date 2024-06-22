@@ -1,0 +1,21 @@
+{
+    "name": "Django: Structured",
+    "dockerComposeFile": [
+        "../docker-compose.yaml",
+        "docker-compose.vscode.yaml"
+    ],
+    "service": "app",
+    "workspaceFolder": "/app",
+    // Default container-specific settings. Set workspace settings to customize.
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "pre-commit-helper.runOnSave": "fixes"
+            },
+            "extensions": [
+                "elagil.pre-commit-helper",
+                "ms-python.python"
+            ]
+        }
+    }
+}

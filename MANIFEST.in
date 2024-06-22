@@ -1,0 +1,2 @@
+include tpl/*
+include README.md

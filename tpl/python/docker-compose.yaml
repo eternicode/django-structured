@@ -1,0 +1,8 @@
+---
+services:
+    app:
+        image: '{{ project_name }}'
+        build:
+            context: .
+        volumes:
+          - .:/app
