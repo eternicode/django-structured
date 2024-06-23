@@ -1,19 +1,15 @@
 import logging
 import pkgutil
-from collections import defaultdict
+import sys
 from importlib import import_module
-from importlib.util import module_from_spec
-from pathlib import Path
 from typing import Dict, Iterable, List
 
-from traitlets import default
-
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 
 
 def load_modules(
-    path,
+    name,
     globals_dict: Dict | None = None,
     all_names: List | None = None,
     *,
@@ -28,26 +24,27 @@ def load_modules(
     the package, optionally adding members to the given globals and __all__.
 
     Usage examples:
-        load_modules(__path__)
+        load_modules(__name__)
 
-        load_modules(__path__, globals())
+        load_modules(__name__, globals())
 
         __all__ = []
-        load_modules(__path__, globals(), __all__)
+        load_modules(__name__, globals(), __all__)
 
         from django.db import models
         __all__ = []
-        load_modules(__path__, globals(), __all__, subclasses_of=models.Model)
+        load_modules(__name__, globals(), __all__, subclasses_of=models.Model)
 
     Args:
         path (str): The package path list to load modules from. Just pass
-            __path__ for most cases.
+            __name__ for most cases.
 
-        globals_dict (dict): The globals dictionary of the importing module, to
-            which members of the imported modules will be added. This is not
-            generally recommended, as naming conflicts can cause unpredictable
-            behavior. Naing conflicts will be raised as exceptions unless
-            error_on_globals_conflict is set to False.
+        globals_dict (dict): The globals() dictionary of the importing module,
+            to which members of the imported modules will be added. It's
+            recommended to combine this with subclasses_of, instances_of,
+            and/or of_types to restrict what is added. Naming conflicts will be
+            raised as exceptions unless error_on_globals_conflict is set to
+            False.
         all_names (list): The __all__ of the importing module, to which imported
             members' names will be added.
 
@@ -55,8 +52,8 @@ def load_modules(
             only direct child modules are loaded.
         error_on_globals_conflict (bool): Whether to raise an exception if a
             naming conflict is detected when adding members to the globals
-            dictionary. If False, clobbering will be enabled and results may be
-            unpredictable.
+            dictionary. If False (not recommended), clobbering will be enabled
+            and results may be unpredictable.
         subclasses_of (iterable of types): If provided, only members that are
             subclasses of any of the types listed will be added to the globals
             dictionary and/or __all__ list.
@@ -67,7 +64,7 @@ def load_modules(
             subclasses_of and instances_of lists (even if they are not
             provided).
     """
-    log.debug(f"{path=}")
+    log.debug(f"{name=}")
     if of_types is not None:
         subclasses_of = (subclasses_of or []) + (of_types or [])
         instances_of = (instances_of or []) + (of_types or [])
@@ -84,11 +81,12 @@ def load_modules(
         Handle actual import logic and recursion.
         """
         pkg_name = ".".join(current_package_path)
+        pkg = sys.modules[pkg_name]
 
         # __start_path = current_package_path
         log.debug(f"{current_package_path=} {pkg_name=}")
 
-        for finder, module_name, is_pkg in pkgutil.iter_modules(path):
+        for finder, module_name, is_pkg in pkgutil.iter_modules(pkg.__path__):
             log.debug(f"{finder=} {module_name=} {is_pkg=}")
             # spec = finder.find_spec(module_name)
             # module = module_from_spec(spec)
@@ -169,4 +167,4 @@ def load_modules(
                 log.debug(f"Recursing into {module_name}")
                 _load_modules(current_package_path + [module_name])
 
-    _load_modules([Path(path[0]).name])
+    _load_modules(name.split("."))

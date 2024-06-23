@@ -1,0 +1,15 @@
+---
+package:
+    __init__.py: |-
+        from django_structured.project_utils import load_modules
+        load_modules(__name__, globals(), recursive=True)
+    subpkg:
+        __init__.py:
+        a.py: |-
+            A = 6
+    a.py: |-
+        A = 5
+tests:
+    raises:
+      - NameError
+      - Duplicate name 'A' in modules 'package.subpkg.a' and 'package.a'

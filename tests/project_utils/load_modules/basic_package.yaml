@@ -1,9 +1,10 @@
 ---
 package:
-    __init__.py: |-
-        from django_structured.project_utils import load_modules
-        load_modules(__path__)
+    __init__.py:
     a.py: |-
         A = 5
 tests:
-    globals_absent: [A]
+    globals_absent:
+      - A
+    modules_imported:
+      - package
