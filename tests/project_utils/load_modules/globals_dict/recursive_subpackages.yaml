@@ -1,0 +1,27 @@
+---
+description: |-
+    Test populating globals recursively
+package:
+    __init__.py: |-
+        from django_structured.project_utils import load_modules
+        load_modules(__name__, globals(), recursive=True)
+    a.py: |-
+        A = 5
+    subpkg:
+        __init__.py:
+        b.py: |-
+            B = 6
+        deep_pkg:
+            __init__.py:
+            c.py: |-
+                C = 8
+    not_a_subpkg:
+        d.py: |-
+            D = 9
+tests:
+    globals_values:
+        A: 5
+        B: 6
+        C: 8
+    globals_absent:
+      - D

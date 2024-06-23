@@ -63,7 +63,7 @@ def get_exception(name: str) -> Exception:
 
 @pytest.mark.parametrize(
     "yaml_file",
-    [pytest.param(file, id=file.name) for file in yaml_dir.glob("*.yaml")],
+    [pytest.param(file, id=file.name) for file in yaml_dir.glob("**/*.yaml")],
 )
 def test_load_modules(yaml_file):
     """

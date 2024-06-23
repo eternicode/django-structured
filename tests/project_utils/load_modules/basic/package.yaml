@@ -1,4 +1,6 @@
 ---
+description: |-
+    Test that normal behavior is not modified
 package:
     __init__.py:
     a.py: |-

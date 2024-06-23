@@ -1,4 +1,7 @@
 ---
+description: |-
+    Test that the `load_modules` function correctly imports modules and
+    submodules.
 package:
     __init__.py: |-
         from django_structured.project_utils import load_modules

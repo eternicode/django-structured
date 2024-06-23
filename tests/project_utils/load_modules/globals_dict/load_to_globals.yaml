@@ -1,0 +1,15 @@
+---
+description: |-
+    Test populating globals from modules
+package:
+    __init__.py: |-
+        from django_structured.project_utils import load_modules
+        load_modules(__name__, globals())
+    a.py: |-
+        A = 5
+    b.py: |-
+        B = 6
+tests:
+    globals_values:
+        A: 5
+        B: 6
