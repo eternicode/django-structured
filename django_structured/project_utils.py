@@ -88,10 +88,7 @@ def load_modules(
 
         for finder, module_name, is_pkg in pkgutil.iter_modules(pkg.__path__):
             log.debug(f"{finder=} {module_name=} {is_pkg=}")
-            # spec = finder.find_spec(module_name)
-            # module = module_from_spec(spec)
-            # spec.loader.exec_module(module)
-            # module = __import__(f"{pkg_name}.{module_name}", fromlist=[])
+
             log.debug(f"import_module({pkg_name}.{module_name})")
             module = import_module(f"{pkg_name}.{module_name}")
 
