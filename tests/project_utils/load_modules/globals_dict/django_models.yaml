@@ -1,0 +1,30 @@
+---
+description: |-
+    Test usage in a django project
+package:
+    __init__.py: |-
+        from django import setup
+        from django.conf import settings
+
+        settings.configure(INSTALLED_APPS=["package"])
+        setup()
+
+        from django.db import models
+        from django_structured.project_utils import load_modules
+
+        __all__ = []
+        load_modules(__name__, globals(), __all__, of_types=[models.Model])
+    mymodela.py: |-
+        from django.db import models
+
+        class MyModelA(models.Model):
+            a = models.IntegerField()
+    mymodelb.py: |-
+        from django.db import models
+
+        class MyModelB(models.Model):
+            b = models.CharField(max_length=100)
+tests:
+    globals_present:
+      - MyModelA
+      - MyModelB

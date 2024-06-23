@@ -1,6 +1,7 @@
 import logging
 import pkgutil
 import sys
+import warnings
 from importlib import import_module
 from typing import Dict, Iterable, List
 
@@ -66,11 +67,11 @@ def load_modules(
     """
     log.debug(f"{name=}")
     if of_types is not None:
-        subclasses_of = (subclasses_of or []) + (of_types or [])
-        instances_of = (instances_of or []) + (of_types or [])
+        subclasses_of = tuple((subclasses_of or []) + (of_types or []))
+        instances_of = tuple((instances_of or []) + (of_types or []))
 
     if globals_dict is None and all_names is not None:
-        log.warning("Populating __all__ but not globals. This is not recommended.")
+        warnings.warn("Populating __all__ but not globals. This is not recommended.")
 
     names_in_modules = {}
 
@@ -139,7 +140,7 @@ def load_modules(
 
                         if not is_desired_subclass and not is_desired_instance:
                             log.debug(
-                                f"Skipping {name} because it's not a subclass of "
+                                f"Skipping {name!r} because it's not a subclass of "
                                 f"{subclasses_of} or an instance of {instances_of}"
                             )
                             continue
